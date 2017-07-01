@@ -1,3 +1,6 @@
+float posX;
+float posY;
+
 #include "ofApp.h"
 
 //--------------------------------------------------------------
@@ -5,6 +8,9 @@ void ofApp::setup(){
     
     ofBackground(255);
     bool savingPDF = false;
+    posX = ofGetWidth()/2;
+    posY = ofGetHeight()/2;
+
 }
 
 //--------------------------------------------------------------
@@ -24,66 +30,55 @@ void ofApp::draw(){
     ofSetBackgroundAuto(false);
     ofEnableAlphaBlending();
     
+    float step_size = 1;
     int direction;
-    int stepSize = 1;
-    float posX = ofGetMouseX();
-    float posY = ofGetMouseY();
     
-    
-    for (int i=0; i<ofGetMouseX(); i++) {
+    for (int i=0; i<=ofGetMouseX(); i++) {
         
-        // of ofRandom method returns a float so we need to caste it to
-        direction = (int) ofRandom(0,8);
+        // the random method returns a float so we need to convert it into a int number between 0 and 7 in order to obtain a single 'direction' point on our compass.
+        direction = (int) ofRandom(0, 8);
         
-//        cout << direction << endl;
-        
-        // rule for moving north
         if (direction == 0) {
-            posX += stepSize;
-        } else
-        // .. northEast
-        if (direction == 1) {
-            posX += stepSize;
-            posY += stepSize;
-        } else
-        // .. east
-        if (direction == 2) {
-            posY += stepSize;
-        } else
-        // .. southEast
-        if (direction == 3) {
-            posX += stepSize;
-            posY -= stepSize;
-        } else
-        // .. south
-        if (direction == 4) {
-            posY -= stepSize;
-        } else
-        // .. southWest
-        if (direction == 5) {
-            posX -= stepSize;
-            posY -= stepSize;
-        } else
-        // .. west
-        if (direction == 6) {
-            posY -= stepSize;
-        } else
-        // .. and finally northWest
-        if (direction == 7) {
-            posY -= stepSize;
-            posX += stepSize;
+            posY -= step_size;
+            
         }
-    
-//        if (posX > ofGetMouseX()) posX = 0;
-//        if (posX < 0) posX = ofGetMouseX();
-//        if (posY < 0) posY = ofGetMouseY();
-//        if (posY > ofGetMouseY()) posY = 0;
+        else if (direction == 1) {
+            posX += step_size;
+            posY -= step_size;
+        }
+        else if (direction == 2) {
+            posX += step_size;
+        }
+        else if (direction == 3) {
+            posX += step_size;
+            posY += step_size;
+        }
+        else if (direction == 4) {
+            posY += step_size;
+        }
+        else if (direction == 5) {
+            posX -=  step_size;
+            posY += step_size;
+        }
+        else if (direction == 6) {
+            posX -= step_size;
+        }
+        else if (direction == 7) {
+            posX -= step_size;
+            posY -= step_size;
+        }
         
+        if (posX > ofGetWidth()) posX = 0;
+        if (posX < 0) posX = ofGetWidth();
+        if (posY < 0) posY = ofGetHeight();
+        if (posY > ofGetHeight()) posY = 0;
         
-        ofSetColor(0, 0, 0, 30);
+        // palette 
+        ofColor army(75,83,32,30);
+        ofSetColor(army);
         
-        ofDrawEllipse(posX, posY, 1, 1);
-    
+        ofDrawEllipse(posX+step_size/2, posY+step_size/2, 1, 1);
+
     }
     
     
@@ -100,11 +95,13 @@ void ofApp::keyPressed(int key){
 
     if (key == 's') { // export as PDF, good to keep a vector format
         savingPDF = true;
+        cout << "PDF screenshot saved" << endl;
     }
-    if (key == 'c') { // export as PNG, for quick reference 
+    if (key == 'c') { // export as PNG, for quick reference
         ofImage screenshot;
         screenshot.grabScreen(0, 0, ofGetWidth(), ofGetHeight());
         screenshot.save("savePNG_"+ofGetTimestampString()+".png");
+        cout << "PNG screenshot saved" << endl;
     }
     if (key == ' ') { // pressing the space bar clears the screen
         ofBackground(255, 255, 255);
